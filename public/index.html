@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#000000">
+<title>xBloom Recolor</title>
+<style>
+  :root {
+    --bg: #000;
+    --surface: #1c1c1e;
+    --surface-2: #2c2c2e;
+    --text: #fff;
+    --muted: #8e8e93;
+    --danger: #ff6961;
+    --radius: 14px;
+    --card: #C9D5B8;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "Segoe UI", Roboto, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; }
+  main { max-width: 520px; margin: 0 auto; padding: 32px 20px 64px; }
+  h1 { font-size: 32px; margin: 0 0 4px; letter-spacing: -0.02em; }
+  .lede { color: var(--muted); margin: 0 0 28px; line-height: 1.45; }
+  section { margin-bottom: 30px; }
+  h2 { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin: 0 0 12px; }
+  input[type=text], input[type=url] {
+    width: 100%; padding: 13px 14px; font: inherit; font-size: 16px; color: var(--text);
+    background: var(--surface); border: 1px solid transparent; border-radius: var(--radius); outline: none;
+  }
+  input:focus-visible { border-color: #fff; }
+  .row { display: flex; gap: 10px; }
+  .row > input { flex: 1; min-width: 0; }
+  button {
+    font: inherit; font-size: 16px; font-weight: 600; border: 0; border-radius: 999px; cursor: pointer;
+    padding: 13px 22px; background: #fff; color: #000; transition: opacity .15s, transform .1s;
+  }
+  button:active { transform: scale(0.97); }
+  button:disabled { opacity: .45; cursor: default; transform: none; }
+  button.secondary { background: var(--surface-2); color: var(--text); }
+  button.full { width: 100%; margin-top: 18px; }
+  .hidden { display: none !important; }
+  .msg { margin: 10px 0 0; font-size: 14px; line-height: 1.4; }
+  .msg.error { color: var(--danger); }
+
+  /* The card, drawn the way the xBloom app draws it. */
+  .item { display: flex; gap: 20px; align-items: center; }
+  .card {
+    position: relative; flex: none; width: 112px; aspect-ratio: 1; border-radius: 10px; overflow: hidden;
+    background: var(--card);
+    --ink: color-mix(in srgb, var(--card), #000 24%);
+  }
+  .card .cup { position: absolute; top: 9px; left: 10px; font-size: 19px; font-weight: 600; color: var(--ink); }
+  .card .num {
+    position: absolute; right: 2px; bottom: -14px; font-size: 92px; font-weight: 700; line-height: 1;
+    color: var(--ink); letter-spacing: -0.04em;
+  }
+  .card svg { position: absolute; left: 10px; bottom: 11px; width: 17px; height: 17px; fill: var(--ink); }
+  .item .title { font-size: 19px; margin: 0 0 8px; word-break: break-word; }
+  .item .meta { font-size: 15px; color: var(--muted); margin: 0; }
+
+  /* Read-only recipe details */
+  .details { margin-top: 18px; background: var(--surface); border-radius: var(--radius); overflow: hidden; }
+  .details table { width: 100%; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; }
+  .details th, .details td { padding: 10px 14px; text-align: left; }
+  .details th { color: var(--muted); font-weight: 500; }
+  .details tbody tr + tr td { border-top: 1px solid var(--surface-2); }
+  .details .grind { padding: 12px 14px; font-size: 14px; color: var(--muted); border-bottom: 1px solid var(--surface-2); }
+  .details .grind b { color: var(--text); font-weight: 500; }
+
+  /* Colour box */
+  .colors { background: var(--surface); border-radius: var(--radius); padding: 16px; }
+  .swatches { display: grid; grid-template-columns: repeat(8, 1fr); gap: 10px; }
+  .swatch {
+    aspect-ratio: 1; border-radius: 50%; padding: 0; border: 0; cursor: pointer;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.12);
+  }
+  .swatch[aria-pressed=true] { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px #fff; }
+  details.advanced { margin-top: 16px; border-top: 1px solid var(--surface-2); padding-top: 14px; }
+  details.advanced summary { cursor: pointer; font-size: 15px; font-weight: 600; list-style: none; display: flex; justify-content: space-between; }
+  details.advanced summary::-webkit-details-marker { display: none; }
+  details.advanced summary::after { content: "+"; color: var(--muted); font-weight: 400; }
+  details.advanced[open] summary::after { content: "−"; }
+  .slider { margin-top: 16px; }
+  .slider label { display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+  input[type=range] {
+    -webkit-appearance: none; appearance: none; width: 100%; height: 26px; border-radius: 13px; margin: 0;
+    background: var(--track); outline: none; box-shadow: inset 0 0 0 1px rgba(255,255,255,.1);
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 26px; height: 26px; border-radius: 50%; background: transparent;
+    border: 3px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.4), 0 1px 4px rgba(0,0,0,.5); cursor: pointer;
+  }
+  input[type=range]::-moz-range-thumb {
+    width: 20px; height: 20px; border-radius: 50%; background: transparent;
+    border: 3px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.4); cursor: pointer;
+  }
+  input[type=range]:focus-visible::-webkit-slider-thumb { outline: 2px solid #fff; outline-offset: 2px; }
+  .picker { display: flex; gap: 10px; align-items: center; margin-top: 16px; }
+  input[type=color] {
+    flex: none; width: 50px; height: 50px; padding: 0; border: 0; border-radius: var(--radius);
+    background: none; cursor: pointer;
+  }
+  input[type=color]::-webkit-color-swatch-wrapper { padding: 0; }
+  input[type=color]::-webkit-color-swatch { border: 0; border-radius: var(--radius); }
+  input[type=color]::-moz-color-swatch { border: 0; border-radius: var(--radius); }
+  #hex { font-family: ui-monospace, Menlo, Consolas, monospace; text-transform: uppercase; background: var(--surface-2); }
+
+  .note { font-size: 13px; color: var(--muted); line-height: 1.45; margin: 12px 0 0; }
+  .result { background: var(--surface); border-radius: var(--radius); padding: 16px; margin-top: 18px; line-height: 1.5; }
+  .result ol { margin: 8px 0 0; padding-left: 20px; color: var(--muted); }
+  .result a { color: #fff; word-break: break-all; }
+  footer { color: var(--muted); font-size: 12px; line-height: 1.5; margin-top: 40px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>xBloom Recolor</h1>
+  <p class="lede">Give any xBloom recipe card the colour you want.</p>
+
+  <section>
+    <h2>1 · Your recipe</h2>
+    <form id="open-form" class="row">
+      <input id="link" type="url" inputmode="url" placeholder="Paste your recipe's share link"
+             aria-label="xBloom share link" required autocomplete="off">
+      <button id="open-btn" type="submit">Open</button>
+    </form>
+    <p id="open-msg" class="msg" role="status"></p>
+  </section>
+
+  <div id="editor" class="hidden">
+    <section>
+      <div class="item">
+        <div class="card" id="card">
+          <span class="cup" id="card-cup"></span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18l-7 12v4h-4v-4z"/></svg>
+          <span class="num" id="card-num"></span>
+        </div>
+        <div>
+          <p class="title" id="card-title"></p>
+          <p class="meta" id="card-meta"></p>
+        </div>
+      </div>
+      <div class="details">
+        <div class="grind" id="grind"></div>
+        <table>
+          <thead><tr><th>Pour</th><th>Water</th><th>Temp</th><th>Flow</th><th>Pause</th></tr></thead>
+          <tbody id="pours"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>2 · Card colour</h2>
+      <div class="colors">
+        <div class="swatches" id="swatches" role="group" aria-label="Preset colours"></div>
+
+        <details class="advanced">
+          <summary>Custom colour</summary>
+          <div class="slider">
+            <label for="hue"><span>Hue</span><span id="hue-val"></span></label>
+            <input type="range" id="hue" min="0" max="360">
+          </div>
+          <div class="slider">
+            <label for="sat"><span>Saturation</span><span id="sat-val"></span></label>
+            <input type="range" id="sat" min="0" max="100">
+          </div>
+          <div class="slider">
+            <label for="lig"><span>Lightness</span><span id="lig-val"></span></label>
+            <input type="range" id="lig" min="0" max="100">
+          </div>
+          <div class="picker">
+            <input type="color" id="color" aria-label="System colour picker">
+            <input type="text" id="hex" maxlength="7" spellcheck="false" aria-label="Hex colour">
+          </div>
+        </details>
+      </div>
+
+      <button id="save-btn" class="full" type="button">Save</button>
+      <p id="save-msg" class="msg" role="status"></p>
+      <div id="result" class="result hidden" aria-live="polite"></div>
+    </section>
+  </div>
+
+  <footer>Unofficial. Uses xBloom's undocumented API, which may change without notice.
+    Not affiliated with xBloom.</footer>
+</main>
+
+<script>
+  const PRESETS = ["#E3C3A8", "#D9302C", "#B48AC9", "#4A90F0", "#8B5A3C", "#C9D5B8", "#F2C14E", "#2E8B57",
+                   "#F28DB2", "#3FB8AF", "#FF8C42", "#6C5CE7", "#DED9AF", "#A3A3A3", "#1F3A5F", "#F5F5F0"];
+  const PATTERNS = {1: "Center", 2: "Spiral", 3: "Circular"};
+
+  const $ = (id) => document.getElementById(id);
+  let recipe = null, link = "", color = "#C9D5B8", hsl = [0, 0, 0];
+
+  // ---- colour maths -------------------------------------------------------
+  function hexToHsl(hex) {
+    const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255);
+    const max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2, d = max - min;
+    let h = 0, s = 0;
+    if (d) {
+      s = d / (1 - Math.abs(2 * l - 1));
+      h = max === r ? ((g - b) / d) % 6 : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
+      h = (h * 60 + 360) % 360;
+    }
+    return [Math.round(h), Math.round(s * 100), Math.round(l * 100)];
+  }
+  function hslToHex(h, s, l) {
+    s /= 100; l /= 100;
+    const k = (n) => (n + h / 30) % 12, a = s * Math.min(l, 1 - l);
+    const f = (n) => l - a * Math.max(-1, Math.min(k(n) - 3, 9 - k(n), 1));
+    return "#" + [0, 8, 4].map((n) => Math.round(f(n) * 255).toString(16).padStart(2, "0")).join("").toUpperCase();
+  }
+
+  // ---- colour UI ----------------------------------------------------------
+  const swatches = PRESETS.map((hex) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "swatch";
+    b.style.background = hex;
+    b.setAttribute("aria-label", hex);
+    b.addEventListener("click", () => setColor(hex));
+    $("swatches").append(b);
+    return b;
+  });
+
+  function paintSliders() {
+    const [h, s, l] = hsl;
+    $("hue").value = h; $("sat").value = s; $("lig").value = l;
+    $("hue-val").textContent = h + "°"; $("sat-val").textContent = s + "%"; $("lig-val").textContent = l + "%";
+    $("hue").style.setProperty("--track", `linear-gradient(to right, ${[0, 60, 120, 180, 240, 300, 360].map((x) => `hsl(${x} ${s}% ${l}%)`).join(",")})`);
+    $("sat").style.setProperty("--track", `linear-gradient(to right, hsl(${h} 0% ${l}%), hsl(${h} 100% ${l}%))`);
+    $("lig").style.setProperty("--track", `linear-gradient(to right, #000, hsl(${h} ${s}% 50%), #fff)`);
+  }
+
+  function setColor(hex, fromSliders = false) {
+    color = hex.toUpperCase();
+    if (!fromSliders) hsl = hexToHsl(color);
+    $("card").style.setProperty("--card", color);
+    $("color").value = color.toLowerCase();
+    if (document.activeElement !== $("hex")) $("hex").value = color;
+    swatches.forEach((b) => b.setAttribute("aria-pressed", String(b.getAttribute("aria-label") === color)));
+    paintSliders();
+    $("result").classList.add("hidden");
+  }
+
+  ["hue", "sat", "lig"].forEach((id, i) => $(id).addEventListener("input", (e) => {
+    hsl[i] = Number(e.target.value);
+    setColor(hslToHex(...hsl), true);
+  }));
+  $("color").addEventListener("input", (e) => setColor(e.target.value));
+  $("hex").addEventListener("input", (e) => {
+    let v = e.target.value.trim();
+    if (v && v[0] !== "#") v = "#" + v;
+    if (/^#[0-9a-f]{6}$/i.test(v)) setColor(v);
+  });
+  $("hex").addEventListener("blur", () => { $("hex").value = color; });
+
+  // ---- recipe -------------------------------------------------------------
+  function cell(text) {
+    const td = document.createElement("td");
+    td.textContent = text;
+    return td;
+  }
+
+  function render() {
+    const pours = recipe.pours.length;
+    const total = Math.round(recipe.dose * recipe.grandWater);
+    $("card-cup").textContent = recipe.cupTypeName;
+    $("card-num").textContent = pours;
+    $("card-title").textContent = recipe.theName;
+    $("card-meta").textContent = `1:${recipe.grandWater}-${total}ml | ${recipe.dose}g | ${pours} Pour${pours === 1 ? "" : "s"}`;
+    $("grind").innerHTML = "";
+    $("grind").append(...(recipe.isSetGrinderSize === 2
+      ? ["Grinder ", Object.assign(document.createElement("b"), {textContent: "off"})]
+      : ["Grind ", Object.assign(document.createElement("b"), {textContent: recipe.grinderSize}),
+         " · ", Object.assign(document.createElement("b"), {textContent: `${recipe.rpm} rpm`})]));
+    $("pours").replaceChildren(...recipe.pours.map((p, i) => {
+      const tr = document.createElement("tr");
+      tr.append(cell(p.theName || (i ? `Pour ${i + 1}` : "Bloom")), cell(`${p.volume} ml`),
+        cell(`${p.temperature}°C`), cell(`${p.flowRate} ml/s · ${PATTERNS[p.pattern] || "–"}`), cell(`${p.pausing}s`));
+      return tr;
+    }));
+    setColor(recipe.theColor);
+  }
+
+  async function api(path, body) {
+    const res = await fetch(path, {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify(body)});
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || `Request failed (${res.status}).`);
+    return data;
+  }
+
+  $("open-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const msg = $("open-msg"), btn = $("open-btn");
+    msg.className = "msg"; msg.textContent = "";
+    btn.disabled = true; btn.textContent = "Opening…";
+    try {
+      ({recipe} = await api("/api/recipe", {link: $("link").value}));
+      link = $("link").value;
+      $("save-msg").textContent = "";
+      $("editor").classList.remove("hidden");
+      render();
+    } catch (err) {
+      msg.className = "msg error"; msg.textContent = err.message;
+    } finally {
+      btn.disabled = false; btn.textContent = "Open";
+    }
+  });
+
+  $("save-btn").addEventListener("click", async () => {
+    const msg = $("save-msg"), btn = $("save-btn"), result = $("result");
+    msg.className = "msg"; msg.textContent = "";
+    result.classList.add("hidden");
+    btn.disabled = true; btn.textContent = "Saving…";
+    try {
+      const {shareUrl} = await api("/api/save", {link, color});
+      const a = Object.assign(document.createElement("a"), {href: shareUrl, textContent: shareUrl, target: "_blank", rel: "noopener"});
+      const steps = document.createElement("ol");
+      for (const s of ["Open the link on your phone.", "Save the recipe in the xBloom app.",
+                       "The recoloured card appears under My Recipes → Shared. You can delete the old one."]) {
+        steps.append(Object.assign(document.createElement("li"), {textContent: s}));
+      }
+      const copy = Object.assign(document.createElement("button"), {type: "button", className: "secondary full", textContent: "Copy link"});
+      copy.addEventListener("click", async () => {
+        await navigator.clipboard.writeText(shareUrl);
+        copy.textContent = "Copied";
+      });
+      const head = Object.assign(document.createElement("p"), {textContent: "Your recoloured recipe is ready:"});
+      head.style.margin = "0 0 6px";
+      result.replaceChildren(head, a, steps, copy);
+      result.classList.remove("hidden");
+    } catch (err) {
+      msg.className = "msg error"; msg.textContent = err.message;
+    } finally {
+      btn.disabled = false; btn.textContent = "Save";
+    }
+  });
+</script>
+</body>
+</html>

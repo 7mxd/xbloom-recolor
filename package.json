@@ -1,0 +1,15 @@
+{
+  "name": "xbloom-recolor",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Recolour an xBloom recipe card and get a new share link.",
+  "type": "module",
+  "engines": {
+    "node": ">=20.6"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --env-file=.env server.js",
+    "test": "node --test"
+  }
+}
