@@ -1,11 +1,11 @@
+<p align="center"><img src="docs/cover.png" alt="xBloom Recolor: coloured recipe cards next to two phones showing the app, one with a recipe opened and a red card selected, one with the colour picker and the new share link"></p>
+
 # xBloom Recolor
 
 Change the card colour of an xBloom recipe, which the official app doesn't let you do.
 No login for users.
 
 **Live:** https://xb-recolor.7mxd.me
-
-<img src="docs/screenshot.png" alt="xBloom Recolor: a recipe opened with its card previewed in red, read-only pour details, and the colour picker" width="360">
 
 1. Paste your recipe's share link (`https://share-h5.xbloom.com/?id=…`). Its details show up, read-only.
 2. Pick a colour: presets, or *Custom colour* (hue / saturation / lightness, hex, or the system picker).
