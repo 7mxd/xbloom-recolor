@@ -3,6 +3,8 @@
 Change the card colour of an xBloom recipe, which the official app doesn't let you do.
 No login for users.
 
+**Live:** https://xb-recolor.7mxd.me
+
 1. Paste your recipe's share link (`https://share-h5.xbloom.com/?id=…`). Its details show up, read-only.
 2. Pick a colour: presets, or *Custom colour* (hue / saturation / lightness, hex, or the system picker).
 3. Click **Save**. You get a new share link. Open it in the xBloom app and save it, and
@@ -54,10 +56,12 @@ npm test
 
 ## Deploy on your own subdomain
 
-**Vercel (free):** import the repo (framework preset: *Other*), add `XBLOOM_EMAIL` and
-`XBLOOM_PASSWORD` under *Settings → Environment Variables*, then *Settings → Domains →
-add* `xbloom.yourdomain.com` and create the `CNAME` record Vercel shows at your DNS
-provider.
+**Vercel (free):** import the repo and add `XBLOOM_EMAIL` and `XBLOOM_PASSWORD` as
+environment variables. `vercel.json` already sets the build (`public/` is the site, `api/`
+the backend, no build step), so ignore any "configuration mismatch" warning; `server.js`
+is excluded via `.vercelignore`. Then *Settings → Domains → add* your subdomain and create
+the `CNAME` record Vercel shows. On Cloudflare, set it to **DNS only** (grey cloud) or the
+HTTPS certificate won't issue.
 
 **Your own server/VPS:** set the two env vars and run `node server.js` (`PORT` optional)
 behind nginx/Caddy with HTTPS.
