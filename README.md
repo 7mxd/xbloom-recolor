@@ -5,6 +5,8 @@ No login for users.
 
 **Live:** https://xb-recolor.7mxd.me
 
+<img src="docs/screenshot.png" alt="xBloom Recolor: a recipe opened with its card previewed in red, read-only pour details, and the colour picker" width="360">
+
 1. Paste your recipe's share link (`https://share-h5.xbloom.com/?id=…`). Its details show up, read-only.
 2. Pick a colour: presets, or *Custom colour* (hue / saturation / lightness, hex, or the system picker).
 3. Click **Save**. You get a new share link. Open it in the xBloom app and save it, and
