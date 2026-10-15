@@ -367,7 +367,7 @@
     $("grind").append(...(recipe.isSetGrinderSize === 2
       ? ["Grinder ", Object.assign(document.createElement("b"), {textContent: "off"})]
       : ["Grind ", Object.assign(document.createElement("b"), {textContent: recipe.grinderSize}),
-         " · ", Object.assign(document.createElement("b"), {textContent: `${recipe.rpm} rpm`})]));
+         " · ", Object.assign(document.createElement("b"), {textContent: `${recipe.rpm} RPM`})]));
     $("pours").replaceChildren(...recipe.pours.map((p, i) => {
       const tr = document.createElement("tr");
       tr.append(cell(p.theName || (i ? `Pour ${i + 1}` : "Bloom")), cell(`${p.volume} ml`, "num"),
