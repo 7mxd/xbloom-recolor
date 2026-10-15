@@ -1,0 +1,163 @@
+{
+  "motifReview": 1,
+  "scope": "whole app",
+  "date": "2026-10-15",
+  "findings": [
+    {
+      "id": "F-001",
+      "severity": "critical",
+      "category": "contrast",
+      "source": "exact",
+      "location": {
+        "file": "public/index.html",
+        "line": 84,
+        "screen": "/ (editor)",
+        "selector": ".card .cup",
+        "viewport": "mobile"
+      },
+      "summary": "The card preview's cup type (\"Tea\") is 1.73:1 on the card in light and dark, so it's hard to read; the preview copies the xBloom app's card on purpose, and the cup type isn't written anywhere else.",
+      "fix": "Keep the preview identical to the xBloom card, and give its content in words: the cup type in the summary line, and a label for screen readers on the preview. Done: the summary line now starts with the cup type, and the preview is announced as \"Card preview: Tea, 3 pours\". The faint text itself stays, as on the real card, so the audit still reports it.",
+      "shot": "design/shots/before/editor.mobile.light.png",
+      "status": "open"
+    },
+    {
+      "id": "F-002",
+      "severity": "major",
+      "category": "missing-state",
+      "source": "judgement",
+      "location": {
+        "file": "public/index.html",
+        "line": 175,
+        "screen": "/"
+      },
+      "summary": "The first screen asks for a share link but never says where it comes from or what it looks like, so a first-time visitor can get stuck at step 1.",
+      "fix": "Add one line under the field: share the recipe from the xBloom app and paste the link; it looks like https://share-h5.xbloom.com/?id=…",
+      "shot": "design/shots/before/index.mobile.png",
+      "status": "fixed"
+    },
+    {
+      "id": "F-003",
+      "severity": "minor",
+      "category": "target-size",
+      "source": "exact",
+      "location": {
+        "file": "public/index.html",
+        "line": 151,
+        "screen": "/",
+        "selector": "#theme-toggle",
+        "viewport": "mobile"
+      },
+      "summary": "The theme toggle is 40×40 px; 44×44 px is easier to tap on a phone.",
+      "fix": "Make it 44×44 px.",
+      "shot": "design/shots/before/index.mobile.png",
+      "status": "fixed"
+    },
+    {
+      "id": "F-004",
+      "severity": "minor",
+      "category": "target-size",
+      "source": "exact",
+      "location": {
+        "file": "public/index.html",
+        "line": 111,
+        "screen": "/ (editor)",
+        "selector": "details.advanced summary",
+        "viewport": "mobile"
+      },
+      "summary": "\"Custom colour\" opens from a 20 px tall line, which is a small target on a phone.",
+      "fix": "Give the whole row a 44 px height.",
+      "shot": "design/shots/before/editor.mobile.light.png",
+      "status": "fixed"
+    },
+    {
+      "id": "F-005",
+      "severity": "minor",
+      "category": "typography",
+      "source": "judgement",
+      "location": {
+        "file": "public/index.html",
+        "line": 96,
+        "screen": "/ (editor)",
+        "selector": ".details td"
+      },
+      "summary": "On a phone the pours table breaks values in the middle (\"100 / ml\") and wraps the flow and pattern unevenly, which makes the numbers hard to scan.",
+      "fix": "Keep each value on one line, put the pour pattern on its own quieter line, and tighten the cell padding on narrow screens.",
+      "shot": "design/shots/before/editor.mobile.light.png",
+      "status": "fixed"
+    },
+    {
+      "id": "F-006",
+      "severity": "minor",
+      "category": "missing-state",
+      "source": "judgement",
+      "location": {
+        "file": "public/index.html",
+        "line": 399
+      },
+      "summary": "\"Copy link\" has no failure state (the browser can refuse the clipboard) and says \"Copied\" forever, even after the link changes.",
+      "fix": "If copying fails, say so and suggest selecting the link; go back to \"Copy link\" after two seconds.",
+      "status": "fixed"
+    },
+    {
+      "id": "F-007",
+      "severity": "minor",
+      "category": "platform-convention",
+      "source": "judgement",
+      "location": {
+        "file": "public/index.html",
+        "line": 129,
+        "selector": "input[type=range]"
+      },
+      "summary": "The sliders remove the browser's focus ring and add one back only in Chrome and Safari, so keyboard users in Firefox can't see which slider they're on.",
+      "fix": "Add the same focus ring to Firefox's slider thumb.",
+      "status": "fixed"
+    },
+    {
+      "id": "F-008",
+      "severity": "minor",
+      "category": "target-size",
+      "source": "exact",
+      "location": {
+        "file": "public/index.html",
+        "line": 105,
+        "screen": "/ (editor)",
+        "selector": ".swatch",
+        "viewport": "mobile"
+      },
+      "summary": "The 16 preset swatches are 31×31 px on a phone; 44×44 px is easier to tap.",
+      "fix": "Keep them: all 16 fit in two rows, with 10 px between them they pass the 24 px minimum, and bigger swatches would need four rows.",
+      "shot": "design/shots/before/editor.mobile.light.png",
+      "status": "open"
+    },
+    {
+      "id": "F-009",
+      "severity": "minor",
+      "category": "target-size",
+      "source": "exact",
+      "location": {
+        "file": "public/index.html",
+        "line": 117,
+        "screen": "/ (editor)",
+        "selector": "input[type=range]",
+        "viewport": "mobile"
+      },
+      "summary": "The sliders are 26 px tall on a phone; 44 px is easier to grab.",
+      "fix": "Keep them: they run the full width of the card, so they're easy to drag, and they pass the 24 px minimum.",
+      "shot": "design/shots/before/editor.mobile.light.png",
+      "status": "open"
+    },
+    {
+      "id": "F-010",
+      "severity": "minor",
+      "category": "consistency",
+      "source": "judgement",
+      "location": {
+        "file": "public/index.html",
+        "line": 23
+      },
+      "summary": "The page uses seven text sizes for six type roles (14 px has no role) and spacing values off the 4 px scale (10, 14, 18, 22, 30 px).",
+      "fix": "Leave the current page as it is; new work uses the design guide's roles and scale.",
+      "status": "open"
+    }
+  ]
+}
