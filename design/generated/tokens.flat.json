@@ -104,37 +104,37 @@
   "shadow.md": "0px 4px 12px 0px rgb(0 0 0 / 0.1)",
   "shadow.lg": "0px 12px 32px 0px rgb(0 0 0 / 0.14)",
   "font.display": {
-    "family": "\"-apple-system\", BlinkMacSystemFont, \"SF Pro Rounded\", \"Segoe UI\", Roboto, sans-serif",
+    "family": "-apple-system, BlinkMacSystemFont, \"SF Pro Rounded\", \"Segoe UI\", Roboto, sans-serif",
     "size": "32px",
     "weight": 700,
     "lineHeight": 1.15
   },
   "font.title": {
-    "family": "\"-apple-system\", BlinkMacSystemFont, \"SF Pro Rounded\", \"Segoe UI\", Roboto, sans-serif",
+    "family": "-apple-system, BlinkMacSystemFont, \"SF Pro Rounded\", \"Segoe UI\", Roboto, sans-serif",
     "size": "19px",
     "weight": 400,
     "lineHeight": 1.3
   },
   "font.heading": {
-    "family": "\"-apple-system\", BlinkMacSystemFont, \"SF Pro Rounded\", \"Segoe UI\", Roboto, sans-serif",
+    "family": "-apple-system, BlinkMacSystemFont, \"SF Pro Rounded\", \"Segoe UI\", Roboto, sans-serif",
     "size": "15px",
     "weight": 600,
     "lineHeight": 1.4
   },
   "font.body": {
-    "family": "\"-apple-system\", BlinkMacSystemFont, \"SF Pro Rounded\", \"Segoe UI\", Roboto, sans-serif",
+    "family": "-apple-system, BlinkMacSystemFont, \"SF Pro Rounded\", \"Segoe UI\", Roboto, sans-serif",
     "size": "16px",
     "weight": 400,
     "lineHeight": 1.45
   },
   "font.label": {
-    "family": "\"-apple-system\", BlinkMacSystemFont, \"SF Pro Rounded\", \"Segoe UI\", Roboto, sans-serif",
+    "family": "-apple-system, BlinkMacSystemFont, \"SF Pro Rounded\", \"Segoe UI\", Roboto, sans-serif",
     "size": "13px",
     "weight": 600,
     "lineHeight": 1.4
   },
   "font.caption": {
-    "family": "\"-apple-system\", BlinkMacSystemFont, \"SF Pro Rounded\", \"Segoe UI\", Roboto, sans-serif",
+    "family": "-apple-system, BlinkMacSystemFont, \"SF Pro Rounded\", \"Segoe UI\", Roboto, sans-serif",
     "size": "12px",
     "weight": 400,
     "lineHeight": 1.5
