@@ -81,7 +81,7 @@
         "selector": ".details td"
       },
       "summary": "On a phone the pours table breaks values in the middle (\"100 / ml\") and wraps the flow and pattern unevenly, which makes the numbers hard to scan.",
-      "fix": "Keep each value on one line, put the pour pattern on its own quieter line, and tighten the cell padding on narrow screens.",
+      "fix": "Keep each value on one line, show the pour pattern beside the flow rate in a quieter style (below it only when the row has no room), and tighten the cell padding on narrow screens.",
       "shot": "design/shots/before/editor.mobile.light.png",
       "status": "fixed"
     },
