@@ -20,33 +20,22 @@
 <meta property="og:image:height" content="640">
 <meta property="og:image:alt" content="Coloured xBloom recipe cards next to two phones showing the app">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="motif.css">
 <style>
-  /* Light by default; dark from the system setting unless overridden. */
+  /* The page's own names, each defined from a design guide role; motif.css switches them for dark mode
+     (from the system setting, or data-theme on <html> when the toggle overrides it). */
   :root {
-    color-scheme: light;
-    --bg: #f2f2f7;
-    --surface: #fff;
-    --surface-2: #e5e5ea;
-    --text: #000;
-    --muted: #6c6c70;
-    --danger: #d70015;
-    --hairline: rgba(0,0,0,.1);
-    --accent: #2959ae; /* 7mxd.me */
-    --radius: 14px;
-    --card: #C9D5B8;
+    --bg: var(--motif-color-background);
+    --surface: var(--motif-color-surface);
+    --surface-2: var(--motif-color-action-secondary);
+    --text: var(--motif-color-text-primary);
+    --muted: var(--motif-color-text-secondary);
+    --danger: var(--motif-color-danger);
+    --hairline: color-mix(in srgb, var(--motif-color-text-primary) 10%, transparent);
+    --accent: var(--motif-color-accent); /* 7mxd.me */
+    --radius: var(--motif-radius-md);
+    --card: #C9D5B8; /* motif-ok: the card's colour before a recipe opens; card colours are the recipe's data, not theme values */
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "Segoe UI", Roboto, sans-serif;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme=light]) {
-      color-scheme: dark;
-      --bg: #000; --surface: #1c1c1e; --surface-2: #2c2c2e; --text: #fff; --muted: #8e8e93;
-      --danger: #ff6961; --hairline: rgba(255,255,255,.12); --accent: #90b2df;
-    }
-  }
-  :root[data-theme=dark] {
-    color-scheme: dark;
-    --bg: #000; --surface: #1c1c1e; --surface-2: #2c2c2e; --text: #fff; --muted: #8e8e93;
-    --danger: #ff6961; --hairline: rgba(255,255,255,.12); --accent: #90b2df;
   }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; }
@@ -64,7 +53,7 @@
   .row > input { flex: 1; min-width: 0; }
   button {
     font: inherit; font-size: 16px; font-weight: 600; border: 0; border-radius: 999px; cursor: pointer;
-    padding: 13px 22px; background: var(--text); color: var(--bg); transition: opacity .15s, transform .1s;
+    padding: 13px 22px; background: var(--text); color: var(--bg); transition: opacity var(--motif-duration-base), transform var(--motif-duration-fast);
   }
   button:active { transform: scale(0.97); }
   button:disabled { opacity: .45; cursor: default; transform: none; }
@@ -79,6 +68,7 @@
   .card {
     position: relative; flex: none; width: 112px; aspect-ratio: 1; border-radius: 10px; overflow: hidden;
     background: var(--card); box-shadow: inset 0 0 0 1px var(--hairline);
+    /* motif-ok: the card's text is the card's own colour 24% darker, as the xBloom app draws it */
     --ink: color-mix(in srgb, var(--card), #000 24%);
   }
   .card .cup { position: absolute; top: 9px; left: 10px; font-size: 19px; font-weight: 600; color: var(--ink); }
@@ -131,10 +121,12 @@
   }
   input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none; width: 26px; height: 26px; border-radius: 50%; background: transparent;
+    /* motif-ok: the thumb sits on the colour it picks, so it stays white with a dark edge in both themes */
     border: 3px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.4), 0 1px 4px rgba(0,0,0,.5); cursor: pointer;
   }
   input[type=range]::-moz-range-thumb {
     width: 20px; height: 20px; border-radius: 50%; background: transparent;
+    /* motif-ok: the thumb sits on the colour it picks, so it stays white with a dark edge in both themes */
     border: 3px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.4); cursor: pointer;
   }
   input[type=range]:focus-visible::-webkit-slider-thumb { outline: 2px solid var(--text); outline-offset: 2px; }
@@ -254,8 +246,9 @@
 </main>
 
 <script>
+  // motif-ok: the preset card colours people pick from; card colours are the recipe's data, not theme values
   const PRESETS = ["#E3C3A8", "#D9302C", "#B48AC9", "#4A90F0", "#8B5A3C", "#C9D5B8", "#F2C14E", "#2E8B57",
-                   "#F28DB2", "#3FB8AF", "#FF8C42", "#6C5CE7", "#DED9AF", "#A3A3A3", "#1F3A5F", "#F5F5F0"];
+                   "#F28DB2", "#3FB8AF", "#FF8C42", "#6C5CE7", "#DED9AF", "#A3A3A3", "#1F3A5F", "#F5F5F0"]; // motif-ok: preset card colours
   const PATTERNS = {1: "Center", 2: "Spiral", 3: "Circular"};
 
   const $ = (id) => document.getElementById(id);
@@ -266,7 +259,7 @@
   function paintTheme() {
     const m = mode();
     document.documentElement.dataset.mode = m;
-    $("theme-color").content = m === "dark" ? "#000000" : "#f2f2f7";
+    $("theme-color").content = getComputedStyle(document.documentElement).getPropertyValue("--motif-color-background").trim();
     $("theme-toggle").setAttribute("aria-label", m === "dark" ? "Switch to light mode" : "Switch to dark mode");
   }
   $("theme-toggle").addEventListener("click", () => {
@@ -277,7 +270,7 @@
   });
   systemDark.addEventListener("change", paintTheme);
   paintTheme();
-  let recipe = null, link = "", color = "#C9D5B8", hsl = [0, 0, 0];
+  let recipe = null, link = "", color = "#C9D5B8", hsl = [0, 0, 0]; // motif-ok: the card's colour before a recipe opens
 
   // ---- colour maths -------------------------------------------------------
   function hexToHsl(hex) {
@@ -316,6 +309,7 @@
     $("hue-val").textContent = h + "°"; $("sat-val").textContent = s + "%"; $("lig-val").textContent = l + "%";
     $("hue").style.setProperty("--track", `linear-gradient(to right, ${[0, 60, 120, 180, 240, 300, 360].map((x) => `hsl(${x} ${s}% ${l}%)`).join(",")})`);
     $("sat").style.setProperty("--track", `linear-gradient(to right, hsl(${h} 0% ${l}%), hsl(${h} 100% ${l}%))`);
+    // motif-ok: the lightness track runs from black to white whatever the theme
     $("lig").style.setProperty("--track", `linear-gradient(to right, #000, hsl(${h} ${s}% 50%), #fff)`);
   }
 
