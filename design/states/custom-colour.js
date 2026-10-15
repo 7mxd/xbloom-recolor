@@ -17,3 +17,5 @@ form.elements.link.value = "https://share-h5.xbloom.com/?id=example";
 form.requestSubmit();
 await new Promise((r) => setTimeout(r, 300));
 document.querySelector("details.advanced").open = true;
+// The card and the sliders are used together: bring them into view, so comparisons show whether they fit on one screen.
+document.getElementById("card").scrollIntoView({ block: "start" });
