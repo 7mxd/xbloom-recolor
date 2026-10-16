@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Recent recipes, step 1</title>
+  <!-- Mock data only: made-up recipes. The thumbnails are drawn in each recipe's own card colour
+       (recipe data, not theme values), with the pour count 24% darker, as the xBloom card does. -->
+</head>
+<body>
+  <div class="mk-stage">
+
+    <!-- 1. First visit: nothing opened yet, so no Recent list at all (the hint already says what to do). -->
+    <div class="mk-frame mk-phone mk-ios">
+      <div class="mk-status"><span>9:41</span><span>100%</span></div>
+      <main class="mk-screen mk-pad mk-stack">
+        <span class="mk-display">xBloom Recolor</span>
+        <span class="mk-body mk-muted">Give any xBloom recipe card the colour you want.</span>
+        <span class="mk-label mk-muted">1 · YOUR RECIPE</span>
+        <div class="mk-row-inline">
+          <input class="mk-input mk-grow" placeholder="Paste your recipe's share link" />
+          <button class="mk-btn">Open</button>
+        </div>
+        <span class="mk-caption mk-muted">Share the recipe from the xBloom app and paste the link here. It looks like https://share-h5.xbloom.com/?id=…</span>
+      </main>
+      <div class="mk-home"></div>
+    </div>
+
+    <!-- 2. Coming back: the last 5 recipes opened on this device, newest first. The whole row reopens it. -->
+    <div class="mk-frame mk-phone mk-ios">
+      <div class="mk-status"><span>9:41</span><span>100%</span></div>
+      <main class="mk-screen mk-pad mk-stack">
+        <span class="mk-display">xBloom Recolor</span>
+        <span class="mk-body mk-muted">Give any xBloom recipe card the colour you want.</span>
+        <span class="mk-label mk-muted">1 · YOUR RECIPE</span>
+        <div class="mk-row-inline">
+          <input class="mk-input mk-grow" placeholder="Paste your recipe's share link" />
+          <button class="mk-btn">Open</button>
+        </div>
+        <span class="mk-caption mk-muted">Share the recipe from the xBloom app and paste the link here. It looks like https://share-h5.xbloom.com/?id=…</span>
+        <div class="mk-row-inline">
+          <span class="mk-label mk-muted mk-grow">RECENT</span>
+          <button class="mk-btn mk-ghost">Clear</button>
+        </div>
+        <div class="mk-list" data-enter="fade">
+          <div class="mk-row">
+            <span class="mk-avatar" style="border-radius:var(--motif-radius-sm);background:#B583CE;color:color-mix(in srgb,#B583CE,#000 24%)">4</span><!-- motif-ok: recipe colour -->
+            <div class="mk-grow"><div class="mk-body">Sample Guji</div><div class="mk-caption mk-muted">Omni · 4 pours · Today</div></div>
+            <span class="mk-muted">›</span>
+          </div>
+          <div class="mk-row">
+            <span class="mk-avatar" style="border-radius:var(--motif-radius-sm);background:#F2C14E;color:color-mix(in srgb,#F2C14E,#000 24%)">3</span><!-- motif-ok: recipe colour -->
+            <div class="mk-grow"><div class="mk-body">Morning Kenya</div><div class="mk-caption mk-muted">Tea · 3 pours · Yesterday</div></div>
+            <span class="mk-muted">›</span>
+          </div>
+          <div class="mk-row">
+            <span class="mk-avatar" style="border-radius:var(--motif-radius-sm);background:#3FB8AF;color:color-mix(in srgb,#3FB8AF,#000 24%)">5</span><!-- motif-ok: recipe colour -->
+            <div class="mk-grow"><div class="mk-body">Iced Ethiopia, long name cut…</div><div class="mk-caption mk-muted">Omni · 5 pours · 3 days ago</div></div>
+            <span class="mk-muted">›</span>
+          </div>
+          <div class="mk-row">
+            <span class="mk-avatar" style="border-radius:var(--motif-radius-sm);background:#E3C3A8;color:color-mix(in srgb,#E3C3A8,#000 24%)">2</span><!-- motif-ok: recipe colour -->
+            <div class="mk-grow"><div class="mk-body">Decaf Colombia</div><div class="mk-caption mk-muted">Other · 2 pours · 12 Oct</div></div>
+            <span class="mk-muted">›</span>
+          </div>
+          <div class="mk-row">
+            <span class="mk-avatar" style="border-radius:var(--motif-radius-sm);background:#1F3A5F;color:color-mix(in srgb,#1F3A5F,#000 24%)">4</span><!-- motif-ok: recipe colour -->
+            <div class="mk-grow"><div class="mk-body">Panama Geisha</div><div class="mk-caption mk-muted">Omni · 4 pours · 2 Oct</div></div>
+            <span class="mk-muted">›</span>
+          </div>
+        </div>
+      </main>
+      <div class="mk-home"></div>
+    </div>
+
+    <!-- 3. Opening from the list: the link fills the field and the Open button says what it's doing. -->
+    <div class="mk-frame mk-phone mk-ios">
+      <div class="mk-status"><span>9:41</span><span>100%</span></div>
+      <main class="mk-screen mk-pad mk-stack">
+        <span class="mk-display">xBloom Recolor</span>
+        <span class="mk-body mk-muted">Give any xBloom recipe card the colour you want.</span>
+        <span class="mk-label mk-muted">1 · YOUR RECIPE</span>
+        <div class="mk-row-inline">
+          <input class="mk-input mk-grow" value="https://share-h5.xbloom.com/?id=k3Lp…" />
+          <button class="mk-btn" disabled>Opening…</button>
+        </div>
+        <span class="mk-caption mk-muted">Share the recipe from the xBloom app and paste the link here. It looks like https://share-h5.xbloom.com/?id=…</span>
+        <div class="mk-row-inline">
+          <span class="mk-label mk-muted mk-grow">RECENT</span>
+          <button class="mk-btn mk-ghost">Clear</button>
+        </div>
+        <div class="mk-list">
+          <div class="mk-row">
+            <span class="mk-avatar" style="border-radius:var(--motif-radius-sm);background:#B583CE;color:color-mix(in srgb,#B583CE,#000 24%)">4</span><!-- motif-ok: recipe colour -->
+            <div class="mk-grow"><div class="mk-body">Sample Guji</div><div class="mk-caption mk-muted">Omni · 4 pours · Today</div></div>
+            <span class="mk-muted">›</span>
+          </div>
+          <div class="mk-row">
+            <span class="mk-avatar" style="border-radius:var(--motif-radius-sm);background:#F2C14E;color:color-mix(in srgb,#F2C14E,#000 24%)">3</span><!-- motif-ok: recipe colour -->
+            <div class="mk-grow"><div class="mk-body">Morning Kenya</div><div class="mk-caption mk-muted">Opening…</div></div>
+            <span class="mk-muted">›</span>
+          </div>
+        </div>
+      </main>
+      <div class="mk-home"></div>
+    </div>
+
+    <!-- 4. Error: a remembered recipe no longer opens (deleted by its owner). The usual message under step 1,
+         plus a way to drop it from the list. The other rows stay. -->
+    <div class="mk-frame mk-phone mk-ios">
+      <div class="mk-status"><span>9:41</span><span>100%</span></div>
+      <main class="mk-screen mk-pad mk-stack">
+        <span class="mk-display">xBloom Recolor</span>
+        <span class="mk-body mk-muted">Give any xBloom recipe card the colour you want.</span>
+        <span class="mk-label mk-muted">1 · YOUR RECIPE</span>
+        <div class="mk-row-inline">
+          <input class="mk-input mk-grow" value="https://share-h5.xbloom.com/?id=k3Lp…" />
+          <button class="mk-btn">Open</button>
+        </div>
+        <span class="mk-caption mk-muted">Share the recipe from the xBloom app and paste the link here. It looks like https://share-h5.xbloom.com/?id=…</span>
+        <span class="mk-error-text">That recipe couldn't be found. It may have been deleted.</span>
+        <button class="mk-btn mk-ghost">Remove “Morning Kenya” from Recent</button>
+        <div class="mk-row-inline">
+          <span class="mk-label mk-muted mk-grow">RECENT</span>
+          <button class="mk-btn mk-ghost">Clear</button>
+        </div>
+        <div class="mk-list">
+          <div class="mk-row">
+            <span class="mk-avatar" style="border-radius:var(--motif-radius-sm);background:#B583CE;color:color-mix(in srgb,#B583CE,#000 24%)">4</span><!-- motif-ok: recipe colour -->
+            <div class="mk-grow"><div class="mk-body">Sample Guji</div><div class="mk-caption mk-muted">Omni · 4 pours · Today</div></div>
+            <span class="mk-muted">›</span>
+          </div>
+          <div class="mk-row">
+            <span class="mk-avatar" style="border-radius:var(--motif-radius-sm);background:#F2C14E;color:color-mix(in srgb,#F2C14E,#000 24%)">3</span><!-- motif-ok: recipe colour -->
+            <div class="mk-grow"><div class="mk-body">Morning Kenya</div><div class="mk-caption mk-muted">Tea · 3 pours · Yesterday</div></div>
+            <span class="mk-muted">›</span>
+          </div>
+        </div>
+      </main>
+      <div class="mk-home"></div>
+    </div>
+
+    <!-- 5. After Clear: the list goes at once, with Undo inline (no "Are you sure?"). -->
+    <div class="mk-frame mk-phone mk-ios">
+      <div class="mk-status"><span>9:41</span><span>100%</span></div>
+      <main class="mk-screen mk-pad mk-stack">
+        <span class="mk-display">xBloom Recolor</span>
+        <span class="mk-body mk-muted">Give any xBloom recipe card the colour you want.</span>
+        <span class="mk-label mk-muted">1 · YOUR RECIPE</span>
+        <div class="mk-row-inline">
+          <input class="mk-input mk-grow" placeholder="Paste your recipe's share link" />
+          <button class="mk-btn">Open</button>
+        </div>
+        <span class="mk-caption mk-muted">Share the recipe from the xBloom app and paste the link here. It looks like https://share-h5.xbloom.com/?id=…</span>
+        <div class="mk-row-inline">
+          <span class="mk-body mk-muted mk-grow">Recent recipes cleared from this device.</span>
+          <button class="mk-btn mk-ghost">Undo</button>
+        </div>
+      </main>
+      <div class="mk-home"></div>
+    </div>
+
+  </div>
+</body>
+</html>

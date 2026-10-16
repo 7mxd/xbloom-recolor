@@ -63,6 +63,46 @@
   .msg { margin: 10px 0 0; font-size: 14px; line-height: 1.4; }
   .msg.error { color: var(--danger); }
 
+  /* Recent recipes: remembered in this browser only; folds into one row while a recipe is open. */
+  .recent { margin-top: var(--motif-space-4); }
+  .recent-head { display: flex; align-items: center; justify-content: space-between; gap: var(--motif-space-3); }
+  .recent-toggle, .link-btn { background: none; padding: 0; border-radius: 0; min-width: 44px; min-height: 44px; }
+  .recent-toggle {
+    display: flex; align-items: center; gap: var(--motif-space-2); color: var(--muted);
+    font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .recent-toggle::after { content: "−"; font-size: 15px; font-weight: 400; letter-spacing: 0; }
+  .recent-toggle[aria-expanded=false]::after { content: "+"; }
+  .link-btn { color: var(--text); font-size: 15px; padding-inline: var(--motif-space-1); border-radius: var(--motif-radius-sm); }
+  .recent-list { list-style: none; margin: 0; padding: 0; background: var(--surface); border-radius: var(--radius); overflow: hidden; }
+  .recent-list:empty { display: none; }
+  .recent-list li { display: flex; align-items: center; }
+  .recent-list li + li { border-top: 1px solid var(--surface-2); }
+  .recent-open {
+    flex: 1; min-width: 0; display: flex; align-items: center; gap: var(--motif-space-3);
+    padding: var(--motif-space-3) 0; padding-inline-start: var(--motif-space-4);
+    background: none; color: var(--text); border-radius: 0; font-weight: 400; text-align: start;
+  }
+  .recent-open.opening:disabled { opacity: 1; }
+  .recent-open .mini {
+    flex: none; width: 40px; height: 40px; display: grid; place-items: center;
+    border-radius: var(--motif-radius-sm); background: var(--c); box-shadow: inset 0 0 0 1px var(--hairline);
+    font-size: var(--motif-font-title-size); font-weight: 700;
+    /* motif-ok: the pour count is the card's own colour 24% darker, as the xBloom app draws it */
+    color: color-mix(in srgb, var(--c), #000 24%);
+  }
+  .recent-open .text { min-width: 0; }
+  .recent-open .name { display: block; font-size: 16px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .recent-open .sub { display: block; font-size: 13px; color: var(--muted); }
+  .recent-remove {
+    flex: none; width: 44px; height: 44px; margin-inline-end: var(--motif-space-1); padding: 0;
+    display: grid; place-items: center; background: none; color: var(--muted);
+  }
+  .recent-remove svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+  .recent-msg { display: flex; align-items: center; justify-content: space-between; gap: var(--motif-space-3); }
+  .recent-msg p { margin: 0; font-size: var(--motif-font-label-size); color: var(--muted); }
+  .recent-msg p:empty { display: none; }
+
   /* The card, drawn the way the xBloom app draws it. */
   .item { display: flex; gap: 20px; align-items: center; }
   .card {
@@ -182,6 +222,18 @@
     </form>
     <p id="link-hint" class="note">Share the recipe from the xBloom app and paste the link here. It looks like https://share-h5.xbloom.com/?id=…</p>
     <p id="open-msg" class="msg" role="status"></p>
+
+    <div id="recent" class="recent hidden">
+      <div id="recent-head" class="recent-head">
+        <button id="recent-toggle" class="recent-toggle" type="button" aria-expanded="true" aria-controls="recent-list">Recent recipes</button>
+        <button id="recent-clear" class="link-btn" type="button">Clear</button>
+      </div>
+      <ul id="recent-list" class="recent-list" aria-label="Recent recipes"></ul>
+      <div class="recent-msg">
+        <p id="recent-msg-text" role="status"></p>
+        <button id="recent-undo" class="link-btn hidden" type="button">Undo</button>
+      </div>
+    </div>
   </section>
 
   <div id="editor" class="hidden">
@@ -336,6 +388,108 @@
   });
   $("hex").addEventListener("blur", () => { $("hex").value = color; });
 
+  // ---- recent recipes -----------------------------------------------------
+  // The last recipes opened in this browser. Keeps 10 so removing one brings up the next; shows 5. Never sent anywhere.
+  const RECENT_KEY = "recent", RECENT_KEEP = 10, RECENT_SHOW = 5;
+  let recentUndo = null; // the list as it was before the last remove or clear
+
+  function loadRecent() {
+    try {
+      const list = JSON.parse(localStorage.getItem(RECENT_KEY));
+      return Array.isArray(list) ? list.filter((x) => x && typeof x.link === "string") : [];
+    } catch { return []; }
+  }
+  function storeRecent(list) {
+    try { localStorage.setItem(RECENT_KEY, JSON.stringify(list.slice(0, RECENT_KEEP))); } catch {}
+  }
+  function remember(link, r) {
+    storeRecent([{link, name: r.theName || "Untitled recipe", cup: r.cupTypeName || "Other", pours: r.pours.length, color: r.theColor, at: Date.now()},
+                 ...loadRecent().filter((x) => x.link !== link)]);
+  }
+  function openedWhen(at) {
+    const day = (t) => new Date(new Date(t).toDateString()).getTime();
+    const days = Math.round((day(Date.now()) - day(at)) / 864e5);
+    if (days <= 0) return "Today";
+    if (days === 1) return "Yesterday";
+    if (days < 7) return `${days} days ago`;
+    return new Date(at).toLocaleDateString("en-GB", {day: "numeric", month: "short"});
+  }
+
+  function recentRow(item) {
+    const li = document.createElement("li");
+    const pours = Number(item.pours) || 0;
+    const open = Object.assign(document.createElement("button"), {type: "button", className: "recent-open"});
+    open.dataset.link = item.link;
+    const mini = Object.assign(document.createElement("span"), {className: "mini", textContent: pours});
+    mini.setAttribute("aria-hidden", "true");
+    mini.style.setProperty("--c", /^#[0-9a-f]{6}$/i.test(item.color) ? item.color : "#C9D5B8"); // motif-ok: a card colour, recipe data
+    const text = Object.assign(document.createElement("span"), {className: "text"});
+    const sub = Object.assign(document.createElement("span"), {className: "sub",
+      textContent: `${item.cup} · ${pours} pour${pours === 1 ? "" : "s"} · ${openedWhen(item.at)}`});
+    text.append(Object.assign(document.createElement("span"), {className: "name", textContent: item.name}), sub);
+    open.append(mini, text);
+    open.addEventListener("click", () => {
+      $("link").value = item.link;
+      $("open-form").requestSubmit();
+    });
+    const remove = Object.assign(document.createElement("button"), {type: "button", className: "recent-remove"});
+    remove.setAttribute("aria-label", `Remove ${item.name} from Recent`);
+    remove.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+    remove.addEventListener("click", () => {
+      const before = loadRecent();
+      storeRecent(before.filter((x) => x.link !== item.link));
+      offerUndo(`Removed “${item.name}”.`, before);
+    });
+    li.append(open, remove);
+    return li;
+  }
+
+  function renderRecent() {
+    const list = loadRecent().slice(0, RECENT_SHOW);
+    $("recent-list").replaceChildren(...list.map(recentRow));
+    $("recent-head").classList.toggle("hidden", !list.length);
+    $("recent").classList.toggle("hidden", !list.length && !recentUndo);
+  }
+  function foldRecent(folded) {
+    $("recent-toggle").setAttribute("aria-expanded", String(!folded));
+    $("recent-list").classList.toggle("hidden", folded);
+    $("recent-clear").classList.toggle("hidden", folded);
+  }
+  function offerUndo(text, before) {
+    recentUndo = before;
+    $("recent-msg-text").textContent = text;
+    $("recent-undo").classList.remove("hidden");
+    renderRecent();
+    $("recent-undo").focus();
+  }
+  function dropUndo() {
+    recentUndo = null;
+    $("recent-msg-text").textContent = "";
+    $("recent-undo").classList.add("hidden");
+  }
+  // While a recipe opens, the rows wait; the one being opened says so.
+  function recentBusy(link) {
+    $("recent-list").querySelectorAll(".recent-open").forEach((b) => {
+      b.disabled = link !== null;
+      b.classList.toggle("opening", b.dataset.link === link);
+      if (b.dataset.link === link) b.querySelector(".sub").textContent = "Opening…";
+    });
+  }
+
+  $("recent-toggle").addEventListener("click", () => foldRecent($("recent-toggle").getAttribute("aria-expanded") === "true"));
+  $("recent-clear").addEventListener("click", () => {
+    const before = loadRecent();
+    try { localStorage.removeItem(RECENT_KEY); } catch {}
+    offerUndo("Recent recipes cleared from this device.", before);
+  });
+  $("recent-undo").addEventListener("click", () => {
+    storeRecent(recentUndo || []);
+    dropUndo();
+    renderRecent();
+    $("recent-toggle").focus();
+  });
+  renderRecent();
+
   // ---- recipe -------------------------------------------------------------
   function cell(text, className) {
     const td = document.createElement("td");
@@ -385,14 +539,20 @@
     const msg = $("open-msg"), btn = $("open-btn");
     msg.className = "msg"; msg.textContent = "";
     btn.disabled = true; btn.textContent = "Opening…";
+    recentBusy($("link").value);
     try {
       ({recipe} = await api("/api/recipe", {link: $("link").value}));
       link = $("link").value;
       $("save-msg").textContent = "";
       $("editor").classList.remove("hidden");
       render();
+      remember(link, recipe);
+      dropUndo();
+      renderRecent();
+      foldRecent(true);
     } catch (err) {
       msg.className = "msg error"; msg.textContent = err.message;
+      renderRecent();
     } finally {
       btn.disabled = false; btn.textContent = "Open";
     }
