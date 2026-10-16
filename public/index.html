@@ -401,17 +401,19 @@
   const RECENT_KEY = "recent", RECENT_KEEP = 10, RECENT_SHOW = 5;
   let recentUndo = null; // the list as it was before the last remove or clear
 
+  // xBloom names can end with a space; trimmed, they read right inside the "Removed “…”" message.
+  const nameOf = (name) => String(name ?? "").trim() || "Untitled recipe";
   function loadRecent() {
     try {
       const list = JSON.parse(localStorage.getItem(RECENT_KEY));
-      return Array.isArray(list) ? list.filter((x) => x && typeof x.link === "string") : [];
+      return Array.isArray(list) ? list.filter((x) => x && typeof x.link === "string").map((x) => ({...x, name: nameOf(x.name)})) : [];
     } catch { return []; }
   }
   function storeRecent(list) {
     try { localStorage.setItem(RECENT_KEY, JSON.stringify(list.slice(0, RECENT_KEEP))); } catch {}
   }
   function remember(link, r) {
-    storeRecent([{link, name: r.theName || "Untitled recipe", cup: r.cupTypeName || "Other", pours: r.pours.length, color: r.theColor, at: Date.now()},
+    storeRecent([{link, name: nameOf(r.theName), cup: r.cupTypeName || "Other", pours: r.pours.length, color: r.theColor, at: Date.now()},
                  ...loadRecent().filter((x) => x.link !== link)]);
   }
   function openedWhen(at) {
