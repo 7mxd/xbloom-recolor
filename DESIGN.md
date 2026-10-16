@@ -58,13 +58,13 @@ xBloom Recolor is a one-page tool for xBloom owners who want a recipe card in th
 | Slider | Hue, saturation, lightness | none | default, focused |
 | Message | Status and errors under a step | info, error | hidden, shown |
 | Result | The new share link, the steps to save it, Copy link | none | hidden, shown, copied, copy failed |
-| Recent list | The last 5 recipes opened on this device, under the link box; a tap reopens one | none | hidden (nothing opened yet), open, folded (a recipe is open; one "Recent recipes +" row), opening ("Opening…" in the row), removed or cleared (inline message with Undo) |
-| Recent row | One remembered recipe: a small card (40 px, `sm` corners, the recipe's colour, its pour count 24% darker), the name on one line, "cup · pours · when", and × to remove it | none | default, pressed, focused, opening, disabled while another opens |
+| Recent list | The last 5 recipes opened or saved on this device, under the link box; a tap reopens one | none | hidden (nothing opened yet), open, folded (a recipe is open; one "Recent recipes +" row), opening ("Opening…" in the row), removed or cleared (inline message with Undo) |
+| Recent row | One remembered recipe: a small card (40 px, `sm` corners, the recipe's colour, its pour count 24% darker), the name on one line, "cup · pours · when" ("Recoloured when" for a copy saved here), and × to remove it | none | default, pressed, focused, opening, disabled while another opens |
 
 ## 6. Patterns
 
 - **Navigation:** one page, two numbered steps; the editor (step 2) appears once a recipe opens.
-- **Recent recipes:** the page remembers the last 10 recipes opened in this browser (link, name, cup, pours, colour, when) and shows the newest 5, so removing one brings up the next. Nothing about them reaches the server. Opening one again moves it to the top. While a recipe is open the list folds into one row, so step 2 stays near the top on phones. Removing a row or clearing the list happens at once and offers Undo; there is no "Are you sure?".
+- **Recent recipes:** the page remembers the last 10 recipes opened in this browser (link, name, cup, pours, colour, when) and shows the newest 5, so removing one brings up the next. Nothing about them reaches the server. Opening one again moves it to the top. Saving a recoloured copy adds the copy at the top, in its new colour and marked "Recoloured", because its new link is otherwise shown only once; the original stays as it was, in its own colour, since its link still opens the original. While a recipe is open the list folds into one row, so step 2 stays near the top on phones. Removing a row or clearing the list happens at once and offers Undo; there is no "Are you sure?".
 - **Forms:** the share link is required and must be a link; the app's own message explains a failure in one sentence under the step.
 - **Empty, loading and error:** before a recipe opens, step 1 says what to paste and where it comes from. Buttons say what is happening while they wait. Errors appear under their step in `danger`.
 - **Feedback:** inline messages only, read out by screen readers (`role="status"`, `aria-live`).
@@ -91,3 +91,4 @@ None yet.
 
 - 2026-10-15 — Design guide extracted from the existing page (Motif review) — so later changes stay consistent — approved by the developer's request to run the whole review
 - 2026-10-16 — Added the Recent list and Recent row components, the recent-recipes pattern, and the small cards' contrast exemption — so people can reopen a recipe with one tap — approved by the developer
+- 2026-10-17 — Recent also remembers each saved copy, marked "Recoloured", next to the original — so a new link isn't lost once the page is left — approved by the developer

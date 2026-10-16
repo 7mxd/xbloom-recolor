@@ -412,9 +412,14 @@
   function storeRecent(list) {
     try { localStorage.setItem(RECENT_KEY, JSON.stringify(list.slice(0, RECENT_KEEP))); } catch {}
   }
-  function remember(link, r) {
-    storeRecent([{link, name: nameOf(r.theName), cup: r.cupTypeName || "Other", pours: r.pours.length, color: r.theColor, at: Date.now()},
-                 ...loadRecent().filter((x) => x.link !== link)]);
+  // A saved copy is remembered too, marked as recoloured (it keeps the mark when it's opened again), so its new
+  // link isn't lost once the page is left; the original stays as it is, in its own colour.
+  function remember(link, r, recoloured = false) {
+    const before = loadRecent();
+    const marked = recoloured || before.some((x) => x.link === link && x.recoloured);
+    storeRecent([{link, name: nameOf(r.theName), cup: r.cupTypeName || "Other", pours: r.pours.length, color: r.theColor, at: Date.now(),
+                  ...(marked ? {recoloured: true} : {})},
+                 ...before.filter((x) => x.link !== link)]);
   }
   function openedWhen(at) {
     const day = (t) => new Date(new Date(t).toDateString()).getTime();
@@ -434,8 +439,9 @@
     mini.setAttribute("aria-hidden", "true");
     mini.style.setProperty("--c", /^#[0-9a-f]{6}$/i.test(item.color) ? item.color : "#C9D5B8"); // motif-ok: a card colour, recipe data
     const text = Object.assign(document.createElement("span"), {className: "text"});
+    const when = openedWhen(item.at);
     const sub = Object.assign(document.createElement("span"), {className: "sub",
-      textContent: `${item.cup} · ${pours} pour${pours === 1 ? "" : "s"} · ${openedWhen(item.at)}`});
+      textContent: `${item.cup} · ${pours} pour${pours === 1 ? "" : "s"} · ${item.recoloured ? `Recoloured ${/^(Today|Yesterday)$/.test(when) ? when.toLowerCase() : when}` : when}`});
     text.append(Object.assign(document.createElement("span"), {className: "name", textContent: item.name}), sub);
     open.append(mini, text);
     open.addEventListener("click", () => {
@@ -575,6 +581,9 @@
     btn.disabled = true; btn.textContent = "Saving…";
     try {
       const {shareUrl} = await api("/api/save", {link, color});
+      dropUndo();
+      remember(shareUrl, {...recipe, theColor: color}, true);
+      renderRecent();
       const a = Object.assign(document.createElement("a"), {href: shareUrl, textContent: shareUrl, target: "_blank", rel: "noopener"});
       const steps = document.createElement("ol");
       for (const s of ["Open the link on your phone.", "Save the recipe in the xBloom app.",
