@@ -12,6 +12,13 @@ No login for users.
 3. Click **Save**. You get a new share link. Open it in the xBloom app and save it, and
    the recoloured card appears under *My Recipes → Shared*.
 
+**Recent recipes:** the recipes you open, and the copies you save (marked *Recoloured*),
+are listed under the link box, so one tap opens one again. The list is kept in your
+browser only and never sent to the server; × removes a recipe and *Clear* empties the
+list, both with Undo.
+
+The page follows your device's light or dark mode, or the switch in its corner.
+
 ## How it works
 
 A share link points at a recipe in its creator's account, and only that account can
@@ -35,6 +42,16 @@ account, and returns that copy's share link.
 
 The protocol is based on [xbloom-py](https://github.com/Alshekhi/xbloom-py) and
 [XBRecipeWriterPlus](https://github.com/hessius/XBRecipeWriterPlus).
+
+## Design
+
+The page's look is written down in `DESIGN.md` and `design/tokens.json`, made with
+[Motif](https://github.com/7mxd/motif). `public/motif.css` is generated from them, so to
+change a colour, font, size or timing, edit `design/tokens.json` and run `motif tokens`,
+then `motif check`. Card colours are the recipes' own data, not theme values.
+`design/states/` holds scripts that put the page in each state (a recipe open, saved, an
+error…) for `motif shot` screenshots; they answer with made-up data, so nothing reaches
+xBloom.
 
 ## Setup
 
